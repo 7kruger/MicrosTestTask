@@ -11,7 +11,7 @@
 			<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Добавить</button>
 		</div>
 
-        @* <---- Модальное окно ----> *@
+        @* <---- Модальное окно создания категории ----> *@
         <div class="modal fade" id="addCategoryModal" tabindex="-1"  aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -50,6 +50,45 @@
         </div>
         @* <---- end ----> *@
 
+        @* <---- Модальное окно редактирования категории ----> *@
+        <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Редактирование</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-danger" id="edit-validation-message"></p>
+                        <form>
+                            <div class="mb-3">
+                                Тип:
+                                <div>
+                                    <div class="form-check">
+                                        <div>
+                                            <label><input class="form-check-input" type="radio" name="editCategoryType" value="0">Приход</label>
+                                        </div>
+                                        <div>
+                                            <label><input class="form-check-input" type="radio" name="editCategoryType" value="1">Расход</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="categoryName" class="col-form-label">Название категории:</label>
+                                <input type="text" class="form-control" id="editCategoryName" />
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-primary" id="saveChanges">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* <---- end ----> *@
+
         @* <---- Модальное окно удаления категории ----> *@
         <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
@@ -63,7 +102,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                        <button type="button" class="btn btn-danger" id="add">Удалить</button>
+                        <button type="button" class="btn btn-danger" id="confirmDelete">Удалить</button>
                     </div>
                 </div>
             </div>
@@ -75,7 +114,7 @@
         <div>
             @foreach (var item in Model.Categories)
             {
-				<div class="card card-body mb-3">
+				<div class="card card-body mb-3" id="@item.Id">
 					<div class="d-flex justify-content-between">
 						<div>@item.Name</div>
 						<div class="d-flex">
@@ -99,6 +138,7 @@
 @section Scripts {
 	<script>
         const addCategoryModal = new bootstrap.Modal($("#addCategoryModal"), { keyboard: false });
+        const editCategoryModal = new bootstrap.Modal($("#editCategoryModal"), { keyboard: false });
         const deleteCategoryModal = new bootstrap.Modal($("#deleteCategoryModal"), { keyboard: false });
 
         $("#add").on("click", function () {
@@ -115,12 +155,69 @@
         });
 
         $("#categories").on("click", "#editCategory", function() {
+            let id = $(this).parent().parent().parent().parent().attr("id");
+            let category = getCategory(id);
 
+            if (category != null) {
+                $("#editCategoryName").val(category.name);
+                if (category.categoryType == "0") {
+                    $("input[name=editCategoryType]").eq(0).prop("checked", true);
+                } else {
+                    $("input[name=editCategoryType]").eq(1).prop("checked", true);
+                }
+                editCategoryModal.show();
+
+                $("#saveChanges").on("click", function() {
+                    const editedCategory = {
+                        id: id,
+                        name: $("#editCategoryName").val(),
+                        categoryType: $("input[name=editCategoryType]:checked").val()
+                    }
+
+                    if(isEmpty(editedCategory.name) || isEmpty(editedCategory.categoryType)) {
+                        $("#edit-validation-message").text("Заполните поля правильно");
+                    } else {
+                        editCategory(editedCategory);
+                    }
+                });
+
+            } else {
+                alert("Ошибка")
+            }
         });
 
         $("#categories").on("click", "#deleteCategory", function () {
-            deleteCategoryModal.show();
+            deleteCategoryModal.show();            
+            let id = $(this).parent().parent().parent().parent().attr("id");
+
+            $("#confirmDelete").on("click", function() {
+                deleteCategory(id);
+            });
         });
+
+        const getCategory = (id) => {
+            let category;
+
+            $.ajax({
+                type: "get",
+                url: `/admin/categories/get?id=${id}`,
+                async: false
+            }).done((data) => {
+                if (data == null) {
+                    category = null;
+                } else {
+                    category = {
+                        id: data.id,
+                        name: data.name,
+                        categoryType: data.categoryType
+                    }
+                }
+            }).fail((e) => {
+                category = null;
+            });
+
+            return category;
+        }
 
         const addCategory = (category) => {
             $.ajax({
@@ -131,26 +228,50 @@
             }).done(() => {
                 window.location.replace($(location).attr("href"));
             }).fail((e) => {
-                alert("Ошибка")
+                $("#validation-message").text(e.responseText);
             });
         }
 
-        const editCategory = () => {
-
+        const editCategory = (category) => {
+            $.ajax({
+                type: "post",
+                url: "/admin/categories/update",
+                async: false,
+                data: { id: category.id, name: category.name, categoryType: category.categoryType }
+            }).done(() => {
+                window.location.replace($(location).attr("href"));
+            }).fail((e) => {
+                isEmpty(e.responseText) ? alert("Произогла ошибка при редактировании категории") : $("#edit-validation-message").text(e.responseText);
+            });
         }
 
-        const deleteCategory = () => {
-
+        const deleteCategory = (id) => {
+            $.ajax({
+                type: "post",
+                url: "/admin/categories/delete",
+                async: false,
+                data: { id: id }
+            }).done(() => {
+                window.location.replace($(location).attr("href"));
+            }).fail((e) => {
+                isEmpty(e.responseText) ? alert("Произошла ошибка при удалении") : alert(e.responseText);
+            });
         }
 
-        $("[data-bs-dismiss=modal]").on("click", function () {
-            clear();
-            //addCategoryModal.hide();
+        $("#addCategoryModal [data-bs-dismiss=modal]").on("click", function () {
+            $("#validation-message").text("");
+            $("#categoryName").val("");
+            $("input[name=сategoryType]").eq(0).prop("checked", true);
+            $("input[name=сategoryType]").eq(1).prop("checked", false);
+        });
+
+        $("#editCategoryModal [data-bs-dismiss=modal]").on("click", function () {
+            $("#edit-validation-message").text("");
+            $("input[name=editCategoryType]").eq(0).prop("checked", false);
+            $("input[name=editCategoryType]").eq(1).prop("checked", false);
         });
 
         const isEmpty = (str) => str.trim() == '';
-
-        const clear = () => $("#categoryName").val('');
 
 	</script>
 }

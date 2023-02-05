@@ -26,7 +26,16 @@ public class ApplicationDbContext : DbContext
 				RegistrationDate = DateTime.Now,
 				IsBlocked = false
 			});
-		});
+            builder.HasData(new User
+            {
+                Id = 2,
+                Name = "kruger",
+                Password = "a03ab19b866fc585b5cb1812a2f63ca861e7e7643ee5d43fd7106b623725fd67", // захешированный пароль '123'
+                Role = Role.User,
+                RegistrationDate = DateTime.Now,
+                IsBlocked = false
+            });
+        });
 
 		modelBuilder.Entity<Category>(builder =>
 		{

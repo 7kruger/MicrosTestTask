@@ -92,9 +92,6 @@
             $("#sum").val('');
             $("#comment").val('');
             $("#validation-message").text('');
-
-            //$("#category option:eq(0)").prop("selected", true);
-            //$("#categoryType option:eq(0)").prop("selected", true);
         }
 
 		const create = (operation) => {
@@ -104,9 +101,6 @@
 				url: "/manage/create",
 				data: operation
 			}).done((data) => {
-				Swal.fire({
-					html: "<div class='text-success'>Success!</div>"
-				})
 				clear();
 				operationModal.hide();
 			}).fail(() => {

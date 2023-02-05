@@ -92,8 +92,13 @@ namespace MicrosTestTask.Controllers
 
         [HttpGet]
         [Route("[controller]/categories/get")]
-        public IActionResult Get(int id)
+        public IActionResult Get(int? id)
         {
+			if (id == null)
+			{
+				return BadRequest();
+			}
+
             var category = _categoryService.GetCategories().FirstOrDefault(x => x.Id == id);
 
             if (category != null)
@@ -128,13 +133,15 @@ namespace MicrosTestTask.Controllers
 		[Route("[controller]/categories/update")]
 		public async Task<IActionResult> Update(CategoryViewModel model)
 		{
-			var category = _categoryService.GetCategories().FirstOrDefault(x => x.Name == model.Name);
+			var category = _categoryService.GetCategories().FirstOrDefault(x => x.Id == model.Id);
 			category.Name = model.Name;
+			category.CategoryType = model.CategoryType;
+
 			var updated = await _categoryService.UpdateAsync(category);
 
-			if (updated != null)
+			if (updated)
 			{
-				return Ok(updated);
+				return Ok();
 			}
 
 			return BadRequest("Не удалось обновить категорию");

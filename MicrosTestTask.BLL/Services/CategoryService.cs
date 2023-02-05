@@ -30,21 +30,22 @@ public class CategoryService : ICategoryService
         await _categoryRepository.CreateAsync(category);
     }
 
-    public async Task<CategoryModel> UpdateAsync(CategoryModel model)
+    public async Task<bool> UpdateAsync(CategoryModel model)
 	{
 		try
 		{
 			var category = await _categoryRepository.GetAll().FirstOrDefaultAsync(x => x.Id == model.Id);
 
 			category.Name = model.Name;
+			category.CategoryType = model.CategoryType;
 
 			await _categoryRepository.UpdateAsync(category);
 
-			return model;
+			return true;
 		}
 		catch (Exception)
 		{
-			return null;
+			return false;
 		}
 	}
 
