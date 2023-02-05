@@ -3,6 +3,8 @@ using MicrosTestTask.BLL.Services;
 using MicrosTestTask.DAL.Entities;
 using MicrosTestTask.DAL.Interfaces;
 using MicrosTestTask.DAL.Repositories;
+using MicrosTestTask.Services.Implementations;
+using MicrosTestTask.Services.Interfaces;
 
 namespace MicrosTestTask;
 
@@ -22,5 +24,6 @@ public static class Initializer
 		services.AddScoped<IUserService, UserService>();
 		services.AddScoped<ICategoryService, CategoryService>();
 		services.AddScoped<IOperationService, OperationService>();
+		services.AddScoped<IManageService, ManageService>();
 	}
 }

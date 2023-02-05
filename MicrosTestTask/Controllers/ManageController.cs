@@ -5,6 +5,8 @@ using MicrosTestTask.ViewModels.Admin;
 using MicrosTestTask.ViewModels.Manage;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MicrosTestTask.BLL.Models;
+using MicrosTestTask.DAL.Enums;
+using MicrosTestTask.Services.Interfaces;
 
 namespace MicrosTestTask.Controllers;
 
@@ -13,11 +15,15 @@ public class ManageController : Controller
 {
 	private readonly IOperationService _operationService;
 	private readonly ICategoryService _categoryService;
+	private readonly IManageService _manageService;
 
-    public ManageController(IOperationService operationService, ICategoryService categoryService)
+    public ManageController(IOperationService operationService,
+							ICategoryService categoryService,
+							IManageService manageService)
     {
         _operationService = operationService;
 		_categoryService = categoryService;
+		_manageService = manageService;
     }
 
 	[HttpGet]
@@ -55,31 +61,9 @@ public class ManageController : Controller
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> History(int? categoryFilterApplied)
+	public IActionResult History(DateTime? startDate, DateTime? endDate, CategoryType? categoryType)
 	{
-		var categories = _categoryService.GetCategories();
-		var historyViewModel = new HistoryViewModel();
-
-		historyViewModel.IncomeCategories = categories.Where(x => x.CategoryType == DAL.Enums.CategoryType.Income)
-			.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name });
-
-		historyViewModel.ExpenseCategories = categories.Where(x => x.CategoryType == DAL.Enums.CategoryType.Expense)
-			.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name });
-
-		historyViewModel.OperationViewModels = _operationService.GetAll(GetCurrentUsername)
-			.Select(x => new OperationViewModel
-			{
-				Id = x.Id,
-				Sum = x.Sum,
-				Comment = x.Comment,
-				Date = x.Date,
-				CategoryViewModel = new CategoryViewModel { Id = x.CategoryModel.Id, Name = x.CategoryModel.Name, CategoryType = x.CategoryModel.CategoryType },
-				CategoryId = x.CategoryId
-			});
-
-		// TODO filters
-
-		historyViewModel.CategoryFilterApplied = categoryFilterApplied ?? 1;		
+		var historyViewModel = _manageService.GetHistoryViewModel(GetCurrentUsername, startDate, endDate, categoryType);
 
 		return View(historyViewModel);
 	}
