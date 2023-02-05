@@ -1,0 +1,157 @@
+﻿@model MicrosTestTask.ViewModels.Admin.ListOfCategoriesViewModel
+
+@{
+	ViewData["Title"] = "Управление категориями";
+}
+
+<div>
+
+	<div>
+		<div class="d-flex justify-content-end mb-3 me-3">
+			<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Добавить</button>
+		</div>
+
+        @* <---- Модальное окно ----> *@
+        <div class="modal fade" id="addCategoryModal" tabindex="-1"  aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Добавить категорию</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-danger" id="validation-message"></p>
+                        <form>
+                            <div class="mb-3">
+                                Тип:
+                                <div>
+                                    <div class="form-check">
+                                        <div>
+                                            <label><input class="form-check-input" type="radio" name="categoryType" value="0" checked>Приход</label>
+                                        </div>
+                                        <div>
+                                            <label><input class="form-check-input" type="radio" name="categoryType" value="1">Расход</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="categoryName" class="col-form-label">Название категории:</label>
+                                <input type="text" class="form-control" id="categoryName" />
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-primary" id="add">Добавить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* <---- end ----> *@
+
+        @* <---- Модальное окно удаления категории ----> *@
+        <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Удаление категории</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Вы действительно хотите удалить категорию?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-danger" id="add">Удалить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* <---- end ----> *@
+    </div>
+
+	<div class="m-3" id="categories">
+        <div>
+            @foreach (var item in Model.Categories)
+            {
+				<div class="card card-body mb-3">
+					<div class="d-flex justify-content-between">
+						<div>@item.Name</div>
+						<div class="d-flex">
+							<div class="me-2">
+								<a class="btn btn-primary" id="editCategory">Редактировать</a>
+							</div>
+							<div class="ms-2">
+								<a class="btn btn-danger" id="deleteCategory">Удалить</a>
+							</div>
+						</div>
+					</div>
+                </div>
+            }
+        </div>		
+	</div>
+    <div class="ms-3">
+        <partial name="PaginationPartial" for="@Model.Pagination" />
+    </div>
+</div>
+
+@section Scripts {
+	<script>
+        const addCategoryModal = new bootstrap.Modal($("#addCategoryModal"), { keyboard: false });
+        const deleteCategoryModal = new bootstrap.Modal($("#deleteCategoryModal"), { keyboard: false });
+
+        $("#add").on("click", function () {
+            const newCategory = { 
+                name: $("#categoryName").val(),
+                categoryType: $("input[name=categoryType]:checked").val()
+            }
+
+            if (isEmpty(newCategory.name)) {
+                $("#validation-message").text("Дайте название новой категории");
+            } else {
+                addCategory(newCategory);
+            }
+        });
+
+        $("#categories").on("click", "#editCategory", function() {
+
+        });
+
+        $("#categories").on("click", "#deleteCategory", function () {
+            deleteCategoryModal.show();
+        });
+
+        const addCategory = (category) => {
+            $.ajax({
+                type: "post",
+                url: "/admin/categories/create",
+                async: false,
+                data: { name: category.name, categoryType: category.categoryType }
+            }).done(() => {
+                window.location.replace($(location).attr("href"));
+            }).fail((e) => {
+                alert("Ошибка")
+            });
+        }
+
+        const editCategory = () => {
+
+        }
+
+        const deleteCategory = () => {
+
+        }
+
+        $("[data-bs-dismiss=modal]").on("click", function () {
+            clear();
+            //addCategoryModal.hide();
+        });
+
+        const isEmpty = (str) => str.trim() == '';
+
+        const clear = () => $("#categoryName").val('');
+
+	</script>
+}
+

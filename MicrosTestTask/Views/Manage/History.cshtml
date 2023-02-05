@@ -1,0 +1,135 @@
+﻿@model MicrosTestTask.ViewModels.Manage.HistoryViewModel
+
+@{
+    ViewData["Title"] = "История";
+}
+
+<div>
+	<div>
+		<form method="get">
+			<div class="text-center d-flex">
+				<a class="btn btn-primary m-2"
+				   data-bs-toggle="collapse"
+				   href="#collapseExample"
+				   role="button"
+				   aria-expanded="false"
+				   aria-controls="collapseExample">
+					Filters
+				</a>
+			</div>
+
+			<div class="collapse" id="collapseExample">
+				<div class="card card-body ms-2 me-2">
+					<div class="d-flex flex-column flex-sm-row justify-content-start">
+
+						<div class="m-2">
+							Start:
+							<input type="date" class="form-control" />
+						</div>
+
+						<div class="m-2">
+							End:
+							<input type="date" class="form-control" />
+						</div>
+
+						<div class="m-2">
+							Тип:
+							<div>
+								<div class="form-check">
+									<div>
+										<label><input class="form-check-input" type="radio" name="categoryType" value="0" checked>Приход</label>
+									</div>
+									<div>
+										<label><input class="form-check-input" type="radio" name="categoryType" value="1">Расход</label>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="m-2">
+							Категория:
+							<select class="form-control"
+									id="incomeList"
+									asp-for="@Model.CategoryFilterApplied" 
+									asp-items="@Model.IncomeCategories">
+							</select>
+							<select class="form-control"
+									id="expenseList"
+									style="display: none"
+									asp-for="@Model.CategoryFilterApplied"
+									asp-items="@Model.ExpenseCategories">
+							</select>
+						</div>
+
+					</div>
+					<div class="d-flex justify-content-start">
+						<button class="btn btn-outline-primary m-2">Применить</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="ms-2 mt-3" id="operations">
+		@if (Model.OperationViewModels.Any())
+		{
+			var counter = 0;
+			@foreach (var item in Model.OperationViewModels)
+			{
+				<div class="card mb-1" @(counter > 4 ? "style=display:none" : string.Empty)>
+					<div class="card-header text-light @(item.CategoryViewModel.CategoryType == MicrosTestTask.DAL.Enums.CategoryType.Income ? " bg-success" : "bg-danger" )">
+						<strong>ID операции: @item.Id</strong>
+					</div>
+					<div class="card-body">
+						<p><strong>Тип: </strong>@(item.CategoryViewModel.CategoryType == MicrosTestTask.DAL.Enums.CategoryType.Income ? "Приход" : "Расход")</p>
+						<p><strong>Дата: </strong>@item.Date.ToShortDateString()</p>
+						<p><strong>Категория: </strong>@item.CategoryViewModel.Name</p>
+						<p><strong>Сумма: </strong>@item.Sum</p>
+						<p><strong>Комментарий: </strong>@item?.Comment</p>
+					</div>
+				</div>
+				counter++;
+			}
+		}
+		else
+		{
+			<h3 class="text-center">Ничего не найдено</h3>
+		}
+	</div>
+	<div class="text-center mt-4 mb-3">
+		<button class="btn btn-secondary" id="showMore" style=@(Model.OperationViewModels.Count() > 5 ? string.Empty : "display:none")>Показать еще</button>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		const operationsToShow = 5;
+		const operationsCount = $("#categories").length;
+		const btn = $("#showMore");
+
+		$("#showMore").on("click", function() {
+			let list = $("#operations").children();
+			let nowShowing = list.filter(":visible").length;
+			list.slice(nowShowing - 1, nowShowing + operationsToShow).fadeIn();
+			if (nowShowing + 5 >= operationsCount) {
+				$("#showMore").hide();
+			}
+		});
+	</script>
+	<script>
+		$("input[name=categoryType]").on("click", function () {
+			let value = $("input[name=categoryType]:checked").val();
+			if (value == "0") {
+				$("#expenseList").attr("disabled", true);
+				$("#expenseList").hide();
+				$("#incomeList").show();
+				$("#incomeList").removeAttr("disabled");
+			} else {
+				$("#incomeList").attr("disabled", true);
+				$("#incomeList").hide();
+				$("#expenseList").show();
+				$("#expenseList").removeAttr("disabled");
+			}
+		});
+	</script>
+}
+

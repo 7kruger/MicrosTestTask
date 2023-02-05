@@ -1,0 +1,88 @@
+﻿@model MicrosTestTask.ViewModels.Admin.ListOfUsersViewModel
+
+@{
+    ViewData["Title"] = "Пользователи";
+}
+
+<div class="container text-center">
+	<form asp-action="Users" asp-controller="Admin" method="post">
+		<div class="m-3">
+			<button class="btn btn-primary m-2" name="type" value="Unlock">Разблокировать</button>
+			<button class="btn btn-primary m-2" name="type" value="Block">Заблокировать</button>
+			<button class="btn btn-primary m-2" name="type" value="AddToAdmin">Добавить в админы</button>
+			<button class="btn btn-primary m-2" name="type" value="RemoveFromAdmin">Убрать из админов</button>
+			<button class="btn btn-danger m-2" name="type" value="Delete">Удалить</button>
+		</div>
+
+		<div style="overflow: auto;">
+			<table class="table table-sm">
+				<thead>
+					<tr>
+						<th scope="col">
+							<label class="form-check-label" for="selectAll">Выбрать все </label>
+							<input id="selectAll" class="form-check-input" type="checkbox" onClick="toggle(this)" />
+						</th>
+						<th scope="col">ID</th>
+						<th scope="col">Имя</th>
+						<th scope="col">Дата регистрации</th>
+						<th scope="col">Статус</th>
+						<th scope="col">Роль</th>
+						<th scope="col">Посмотреть</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var user in Model.Users)
+					{
+						<tr>
+							<td><input class="form-check-input" type="checkbox" name="selectedUsers" value="@user.Id" /></td>
+							<td><p>@user.Id</p></td>
+							<td><p>@user.Name</p></td>
+							<td><p>@user.RegistrationDate.ToString()</p></td>
+							<td><p>@(user.IsBlocked ? "Заблокирован" : "Активный")</p></td>
+							<td><p>@user.Role.ToString()</p></td>
+							<td><div class="btn btn-primary" style="cursor: pointer;" onclick="showProfile('@user.Name')">Посмотреть</div></td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</form>
+</div>
+<div>
+	<partial name="PaginationPartial" for="@Model.Pagination" />
+</div>
+
+<div class="modal fade" id="showUserInfoModal" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" id="exampleModalLabel">Информация о пользователе</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body text-center">
+				<div>
+					<h3 id="username"></h3>
+					<div class="mt-5 ">
+						<p style="font-size: 1.3rem;">Статистика за все время</p>
+
+						<div class="d-flex justify-content-center">
+							<ul class="list-group list-group-horizontal">
+								<li class="list-group-item text-success" id="allTimeIncome"></li>
+								<li class="list-group-item" id="difference"></li>
+								<li class="list-group-item text-danger" id="allTimeExpense"></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script src="~/js/checkboxScript.js"></script>
+	<script src="~/js/showProfile.js"></script>
+}
