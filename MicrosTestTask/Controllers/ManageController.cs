@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MicrosTestTask.BLL.Interfaces;
-using MicrosTestTask.ViewModels.Admin;
-using MicrosTestTask.ViewModels.Manage;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MicrosTestTask.BLL.Interfaces;
 using MicrosTestTask.BLL.Models;
 using MicrosTestTask.DAL.Enums;
 using MicrosTestTask.Services.Interfaces;
+using MicrosTestTask.ViewModels.Admin;
+using MicrosTestTask.ViewModels.Manage;
 
 namespace MicrosTestTask.Controllers;
 
@@ -17,14 +17,14 @@ public class ManageController : Controller
 	private readonly ICategoryService _categoryService;
 	private readonly IManageService _manageService;
 
-    public ManageController(IOperationService operationService,
+	public ManageController(IOperationService operationService,
 							ICategoryService categoryService,
 							IManageService manageService)
-    {
-        _operationService = operationService;
+	{
+		_operationService = operationService;
 		_categoryService = categoryService;
 		_manageService = manageService;
-    }
+	}
 
 	[HttpGet]
 	public IActionResult Create()
@@ -60,7 +60,7 @@ public class ManageController : Controller
 		return BadRequest("Ошибка при создании операции");
 	}
 
-	[HttpGet]
+    [HttpGet]
 	public IActionResult History(DateTime? startDate, DateTime? endDate, CategoryType? categoryType)
 	{
 		var historyViewModel = _manageService.GetHistoryViewModel(GetCurrentUsername, startDate, endDate, categoryType);
@@ -69,9 +69,11 @@ public class ManageController : Controller
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> Statistics()
+	public IActionResult Statistics(int? month)
 	{
-		return View();
+		var statisticsViewModel = _manageService.GetStatisticsViewModel(month);
+
+        return View(statisticsViewModel);
 	}
 
 	private string GetCurrentUsername => User.Identity.Name;

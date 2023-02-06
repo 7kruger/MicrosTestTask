@@ -9,17 +9,26 @@ namespace MicrosTestTask.BLL.Services;
 public class CategoryService : ICategoryService
 {
 	private readonly IRepository<Category> _categoryRepository;
+	private readonly IOperationService _operationService;
 
-	public CategoryService(IRepository<Category> categoryRepository)
+	public CategoryService(IRepository<Category> categoryRepository, IOperationService operationService)
 	{
 		_categoryRepository = categoryRepository;
+		_operationService = operationService;
 	}
 
 	public IEnumerable<CategoryModel> GetCategories()
 	{
+		var operations = _operationService.GetAll();
 		var categories = _categoryRepository.GetAll()
 			.AsEnumerable()
-			.Select(x => new CategoryModel { Id = x.Id, Name = x.Name, CategoryType = x.CategoryType });
+			.Select(x => new CategoryModel 
+			{ 
+				Id = x.Id, 
+				Name = x.Name, 
+				CategoryType = x.CategoryType,
+				Operations = operations.Where(i => i.CategoryId == x.Id)
+			});
 		return categories;
 	}
 

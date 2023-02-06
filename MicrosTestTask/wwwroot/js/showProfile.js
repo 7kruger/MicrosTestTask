@@ -8,7 +8,7 @@ const showProfile = (name) => {
 	}).done((data) => {
 		$("#username").text(data.username);
 		$("#allTimeIncome").text(`Приходы: +${data.allTimeIncome}`);
-		$("#difference").text(`Разница: ${data.difference >= 0 ? "+" : "-"}${data.difference}`);
+		$("#difference").text(`Разница: ${data.difference >= 0 ? "+" : ""}${data.difference}`);
 		$("#allTimeExpense").text(`Расходы: -${data.allTimeExpense}`);
 		showUserInfoModal.show();
 	}).fail(e => {

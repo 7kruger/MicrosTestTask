@@ -4,7 +4,7 @@ namespace MicrosTestTask.BLL.Interfaces;
 
 public interface IOperationService
 {
-	IEnumerable<OperationModel> GetAll(string username);
+	IEnumerable<OperationModel> GetAll();
 	Task<bool> Create(OperationModel model, string username);
 	Task Update(OperationModel model);
 	Task Delete(int id);

@@ -31,7 +31,7 @@
 			<div class="d-flex justify-content-center">
 				<ul class="list-group list-group-horizontal">
 					@{
-						var mark = Model.Difference >= 0 ? "+" : "-";
+						var mark = Model.Difference >= 0 ? "+" : string.Empty;
 					}
 					<li class="list-group-item text-success">Приходы: +@Model.AllTimeIncome</li>
 					<li class="list-group-item">Разница: @mark@Model.Difference</li>
