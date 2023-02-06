@@ -7,9 +7,9 @@ const showProfile = (name) => {
 		data: { username: name },
 	}).done((data) => {
 		$("#username").text(data.username);
-		$("#allTimeIncome").text(`Приходы: +${data.allTimeIncome}`);
-		$("#difference").text(`Разница: ${data.difference >= 0 ? "+" : ""}${data.difference}`);
-		$("#allTimeExpense").text(`Расходы: -${data.allTimeExpense}`);
+		$("#allTimeIncome").text(`Приходы: +${data.allTimeIncome}$`);
+		$("#difference").text(`Разница: ${data.difference >= 0 ? "+" : ""}${data.difference}$`);
+		$("#allTimeExpense").text(`Расходы: -${data.allTimeExpense}$`);
 		$("#avatar").prop("src", data.imgRef);
 		showUserInfoModal.show();
 	}).fail(e => {

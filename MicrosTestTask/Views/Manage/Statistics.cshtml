@@ -57,11 +57,14 @@
 				{
 					<tr>
 						<td>@item.Name</td>
-						<td>@item.Operations.Sum(x => x.Sum)</td>
+						<td>@item.Operations.Sum(x => x.Sum)$</td>
 					</tr>
 				}
 			</tbody>
 		</table>
+		<div class="d-flex justify-content-end">
+			<strong>Всего: @Model.IncomeCategories.Sum(x => x.Operations.Sum(o => o.Sum))$</strong>
+		</div>
 	</div>
 	
 	<div>
@@ -78,11 +81,14 @@
 				{
 					<tr>
 						<td>@item.Name</td>
-						<td>@item.Operations.Sum(x => x.Sum)</td>
+						<td>@item.Operations.Sum(x => x.Sum)$</td>
 					</tr>
 				}
 			</tbody>
 		</table>
+		<div class="d-flex justify-content-end">
+			<strong>Всего: @Model.ExpenseCategories.Sum(x => x.Operations.Sum(o => o.Sum))$</strong>
+		</div>
 	</div>
 </div>
 

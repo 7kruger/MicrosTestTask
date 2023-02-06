@@ -78,7 +78,7 @@
 						<p><strong>Тип: </strong>@(item.CategoryViewModel.CategoryType == MicrosTestTask.DAL.Enums.CategoryType.Income ? "Приход" : "Расход")</p>
 						<p><strong>Дата: </strong>@item.Date.ToShortDateString()</p>
 						<p><strong>Категория: </strong>@item.CategoryViewModel.Name</p>
-						<p><strong>Сумма: </strong>@item.Sum</p>
+						<p><strong>Сумма: </strong>@item.Sum$</p>
 						<p><strong>Комментарий: </strong>@item?.Comment</p>
 					</div>
 				</div>

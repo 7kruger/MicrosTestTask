@@ -38,9 +38,9 @@
 					@{
 						var mark = Model.Difference >= 0 ? "+" : string.Empty;
 					}
-					<li class="list-group-item text-success">Приходы: +@Model.AllTimeIncome</li>
-					<li class="list-group-item">Разница: @mark@Model.Difference</li>
-					<li class="list-group-item text-danger">Расходы: -@Model.AllTimeExpense</li>
+					<li class="list-group-item text-success">Приходы: +@Model.AllTimeIncome$</li>
+					<li class="list-group-item">Разница: @mark@Model.Difference$</li>
+					<li class="list-group-item text-danger">Расходы: -@Model.AllTimeExpense$</li>
 				</ul>
 			</div>
 		</div>
