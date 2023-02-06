@@ -17,26 +17,33 @@ public class CategoryService : ICategoryService
 		_operationService = operationService;
 	}
 
-	public IEnumerable<CategoryModel> GetCategories()
+	public async Task<IEnumerable<CategoryModel>> GetCategories()
 	{
-		var operations = _operationService.GetAll();
-		var categories = _categoryRepository.GetAll()
-			.AsEnumerable()
-			.Select(x => new CategoryModel 
-			{ 
-				Id = x.Id, 
-				Name = x.Name, 
+		var operations = await _operationService.GetAll();
+		var categories = (await _categoryRepository.GetAll().ToListAsync())
+			.Select(x => new CategoryModel
+			{
+				Id = x.Id,
+				Name = x.Name,
 				CategoryType = x.CategoryType,
 				Operations = operations.Where(i => i.CategoryId == x.Id)
 			});
 		return categories;
 	}
 
-    public async Task CreateAsync(CategoryModel model)
+    public async Task<bool> CreateAsync(CategoryModel model)
     {
-        var category = new Category { Name = model.Name, CategoryType = model.CategoryType };
+		try
+		{
+			var category = new Category { Name = model.Name, CategoryType = model.CategoryType };
+			await _categoryRepository.CreateAsync(category);
 
-        await _categoryRepository.CreateAsync(category);
+			return true;
+		}
+		catch (Exception)
+		{
+			return false;
+		}
     }
 
     public async Task<bool> UpdateAsync(CategoryModel model)

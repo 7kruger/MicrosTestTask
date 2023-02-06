@@ -16,23 +16,20 @@ public class UserService : IUserService
 		_userRepository = userRepository;
 	}
 
-	public IEnumerable<UserModel> GetUsers()
+	public async Task<IEnumerable<UserModel>> GetUsers()
 	{
 		try
 		{
-			var users = _userRepository.GetAll().AsEnumerable()
-				.Select(x =>
+			var users = await _userRepository.GetAll()
+				.Select(x => new UserModel
 				{
-					return new UserModel
-					{
-						Id = x.Id,
-						Name = x.Name,
-						Password = x.Password,
-						IsBlocked = x.IsBlocked,
-						Role = x.Role,
-						RegistrationDate = x.RegistrationDate
-					};
-				});
+					Id = x.Id,
+					Name = x.Name,
+					Password = x.Password,
+					IsBlocked = x.IsBlocked,
+					Role = x.Role,
+					RegistrationDate = x.RegistrationDate
+				}).ToListAsync();
 
 			return users;
 		}

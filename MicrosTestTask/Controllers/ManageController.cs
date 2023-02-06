@@ -5,7 +5,6 @@ using MicrosTestTask.BLL.Interfaces;
 using MicrosTestTask.BLL.Models;
 using MicrosTestTask.DAL.Enums;
 using MicrosTestTask.Services.Interfaces;
-using MicrosTestTask.ViewModels.Admin;
 using MicrosTestTask.ViewModels.Manage;
 
 namespace MicrosTestTask.Controllers;
@@ -27,9 +26,9 @@ public class ManageController : Controller
 	}
 
 	[HttpGet]
-	public IActionResult Create()
+	public async Task<IActionResult> Create()
 	{
-		var categories = _categoryService.GetCategories();
+		var categories = await _categoryService.GetCategories();
 		var createOperationViewModel = new CreateOperationViewModel();
 
 		createOperationViewModel.IncomeCategories = categories.Where(x => x.CategoryType == DAL.Enums.CategoryType.Income)
@@ -60,20 +59,20 @@ public class ManageController : Controller
 		return BadRequest("Ошибка при создании операции");
 	}
 
-    [HttpGet]
-	public IActionResult History(DateTime? startDate, DateTime? endDate, CategoryType? categoryType)
+	[HttpGet]
+	public async Task<IActionResult> History(DateTime? startDate, DateTime? endDate, CategoryType? categoryType)
 	{
-		var historyViewModel = _manageService.GetHistoryViewModel(GetCurrentUsername, startDate, endDate, categoryType);
+		var historyViewModel = await _manageService.GetHistoryViewModel(GetCurrentUsername, startDate, endDate, categoryType);
 
 		return View(historyViewModel);
 	}
 
 	[HttpGet]
-	public IActionResult Statistics(int? month)
+	public async Task<IActionResult> Statistics(int? month, int? year)
 	{
-		var statisticsViewModel = _manageService.GetStatisticsViewModel(month);
+		var statisticsViewModel = await _manageService.GetStatisticsViewModel(GetCurrentUsername, month, year);
 
-        return View(statisticsViewModel);
+		return View(statisticsViewModel);
 	}
 
 	private string GetCurrentUsername => User.Identity.Name;

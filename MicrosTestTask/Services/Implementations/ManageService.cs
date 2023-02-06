@@ -12,15 +12,17 @@ public class ManageService : IManageService
 	private readonly ICategoryService _categoryService;
 	private readonly IOperationService _operationService;
 
-	public ManageService(ICategoryService categoryService, IOperationService operationService)
+	public ManageService(ICategoryService categoryService, 
+						 IOperationService operationService,
+						 IUserService userService)
 	{
 		_categoryService = categoryService;
 		_operationService = operationService;
 	}
 
-	public HistoryViewModel GetHistoryViewModel(string username, DateTime? startDate, DateTime? endDate, CategoryType? categoryType)
+	public async Task<HistoryViewModel> GetHistoryViewModel(string username, DateTime? startDate, DateTime? endDate, CategoryType? categoryType)
 	{
-		var categories = _categoryService.GetCategories();
+		var categories = await _categoryService.GetCategories();
 		var historyViewModel = new HistoryViewModel();
 
 		historyViewModel.IncomeCategories = categories.Where(x => x.CategoryType == DAL.Enums.CategoryType.Income)
@@ -29,7 +31,7 @@ public class ManageService : IManageService
 		historyViewModel.ExpenseCategories = categories.Where(x => x.CategoryType == DAL.Enums.CategoryType.Expense)
 			.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name });
 
-		var operations = _operationService.GetAll().Where(x => x.User.Name == username);
+		var operations = (await _operationService.GetAll()).Where(x => x.User.Name == username);
 
 		if (categoryType != null)
 		{
@@ -61,15 +63,18 @@ public class ManageService : IManageService
 		return historyViewModel;
 	}
 
-    public StatisticsViewModel GetStatisticsViewModel(int? month)
+    public async Task<StatisticsViewModel> GetStatisticsViewModel(string username, int? month, int? year)
     {
 		month = month ?? DateTime.Now.Month;
-		var categories = _categoryService.GetCategories().ToList();
+		year = year ?? DateTime.Now.Year;
+		var categories = (await _categoryService.GetCategories()).ToList();
+		categories.ForEach(x => x.Operations = x.Operations.Where(o => o.User.Name == username));
+
         var statisticsViewModel = new StatisticsViewModel();
         statisticsViewModel.IncomeCategories = categories.Where(x => x.CategoryType == CategoryType.Income)
             .Select(x =>
             {
-				var operations = x.Operations.Where(o => o.Date.Month == month);
+				var operations = x.Operations.Where(o => o.Date.Month == month && o.Date.Year == year);
 				return new CategoryViewModel
 				{
 					Id = x.Id,
@@ -81,7 +86,7 @@ public class ManageService : IManageService
         statisticsViewModel.ExpenseCategories = categories.Where(x => x.CategoryType == CategoryType.Expense)
             .Select(x =>
             {
-                var operations = x.Operations.Where(o => o.Date.Month == month);
+                var operations = x.Operations.Where(o => o.Date.Month == month && o.Date.Year == year);
                 return new CategoryViewModel
                 {
                     Id = x.Id,
@@ -93,6 +98,8 @@ public class ManageService : IManageService
 
         statisticsViewModel.Months = GetMonths();
         statisticsViewModel.Month = month ?? null;
+		statisticsViewModel.Years = GetYears();
+		statisticsViewModel.Year = year ?? null;
 
 		return statisticsViewModel;
     }
@@ -101,7 +108,6 @@ public class ManageService : IManageService
 	{
 		var months = new List<SelectListItem>
 		{
-			new SelectListItem { Value = null, Text = "За все время", Selected = true },
             new SelectListItem { Value = "1", Text = "Январь", Selected = false },
             new SelectListItem { Value = "2", Text = "Февраль", Selected = false },
             new SelectListItem { Value = "3", Text = "Март", Selected = false },
@@ -117,5 +123,17 @@ public class ManageService : IManageService
         };
 
 		return months;
+	}
+
+	private IEnumerable<SelectListItem> GetYears()
+	{
+		var years = new List<SelectListItem>();
+
+		for (int i = DateTime.Now.Year; i > DateTime.Now.Year - 5; i--)
+		{
+			years.Add(new SelectListItem { Value = i.ToString(), Text = i.ToString() });
+		}
+
+		return years;
 	}
 }

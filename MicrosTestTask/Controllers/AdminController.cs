@@ -24,22 +24,21 @@ namespace MicrosTestTask.Controllers
 		public IActionResult Index() => View();
 
 		[HttpGet]
-		public IActionResult Users(int? pageId)
+		public async Task<IActionResult> Users(int? pageId)
 		{
 			var page = pageId ?? 1;
 			var pageSize = 10;
 
-			var users = _userService.GetUsers().Select(x =>
-			{
-				return new UserViewModel
+			var users = (await _userService.GetUsers())
+				.Skip(1)
+				.Select(x => new UserViewModel
 				{
 					Id = x.Id,
 					Name = x.Name,
 					Role = x.Role,
 					RegistrationDate = x.RegistrationDate,
 					IsBlocked = x.IsBlocked,
-				};
-			});
+				});
 
 			var listOfUsersViewModel = new ListOfUsersViewModel();
 			listOfUsersViewModel.Users = users.Skip((page - 1) * pageSize).Take(pageSize);
@@ -74,12 +73,12 @@ namespace MicrosTestTask.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult Categories(int? pageId)
+		public async Task<IActionResult> Categories(int? pageId)
 		{
 			var page = pageId ?? 1;
 			var pageSize = 5;
 
-			var categories = _categoryService.GetCategories()
+			var categories = (await _categoryService.GetCategories())
 				.Select(x => new CategoryViewModel { Id = x.Id, Name = x.Name, })
 				.Skip(2); // пропускаем первые категории, чтобы категории 'другое' и 'иные доходы' нельзя было удалить или изменить
 
@@ -92,14 +91,14 @@ namespace MicrosTestTask.Controllers
 
         [HttpGet]
         [Route("[controller]/categories/get")]
-        public IActionResult Get(int? id)
+        public async Task<IActionResult> Get(int? id)
         {
 			if (id == null)
 			{
 				return BadRequest();
 			}
 
-            var category = _categoryService.GetCategories().FirstOrDefault(x => x.Id == id);
+            var category = (await _categoryService.GetCategories()).FirstOrDefault(x => x.Id == id);
 
             if (category != null)
             {
@@ -124,20 +123,31 @@ namespace MicrosTestTask.Controllers
 				return BadRequest("Категория уже существует");
 			}
 
-			await _categoryService.CreateAsync(new CategoryModel { Name = model.Name, CategoryType = model.CategoryType });
+			var created = await _categoryService.CreateAsync(new CategoryModel { Name = model.Name, CategoryType = model.CategoryType });
 
-			return Ok();
+			if (created)
+			{
+				return Ok();
+			}
+
+			return BadRequest("Произошла ошибка при создании категории");
 		}
 
         [HttpPost]
 		[Route("[controller]/categories/update")]
 		public async Task<IActionResult> Update(CategoryViewModel model)
 		{
-			var category = _categoryService.GetCategories().FirstOrDefault(x => x.Id == model.Id);
-			category.Name = model.Name;
-			category.CategoryType = model.CategoryType;
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 
-			var updated = await _categoryService.UpdateAsync(category);
+			var updated = await _categoryService.UpdateAsync(new CategoryModel 
+			{ 
+				Id = model.Id, 
+				Name = model.Name, 
+				CategoryType = model.CategoryType 
+			});
 
 			if (updated)
 			{

@@ -21,13 +21,12 @@ public class OperationService : IOperationService
         _userRepository = userRepository;
     }
 
-    public IEnumerable<OperationModel> GetAll()
+    public async Task<IEnumerable<OperationModel>> GetAll()
     {
         try
         {
-            var operations = _operationRepository.GetAll()
+            var operations = await _operationRepository.GetAll()
                 .OrderByDescending(c => c.Id)
-                .AsEnumerable()
                 .Select(x => new OperationModel
                 {
                     Id = x.Id,
@@ -37,7 +36,7 @@ public class OperationService : IOperationService
                     CategoryId = x.Category.Id,
                     User = x.User,
                     CategoryModel = new CategoryModel { Id = x.Category.Id, Name = x.Category.Name, CategoryType = x.Category.CategoryType }
-                });
+                }).ToListAsync();
 
             return operations;
         }

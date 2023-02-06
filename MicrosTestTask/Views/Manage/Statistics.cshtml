@@ -7,16 +7,31 @@
 <div class="m-3">
     <form asp-action="Statistics" asp-controller="Manage" method="get">
         <div class="d-flex justify-content-between">
+			
 			<div class="d-flex">
-				<div class="pt-2 me-2">
-					<p>Статистика за </p>
+				<div class="d-flex m-1">
+					<div class="pt-2 me-2">
+						<p>Статистика за </p>
+					</div>
+					<div>
+						<select name="month"
+								class="form-control"
+								asp-for="@Model.Month"
+								asp-items="@Model.Months">
+						</select>
+					</div>
 				</div>
-				<div>
-					<select name="month"
-							class="form-control"
-							asp-for="@Model.Month"
-							asp-items="@Model.Months">
-					</select>
+				<div class="d-flex m-1">
+					<div class="pt-2 me-2">
+						<p>Год: </p>
+					</div>
+					<div>
+						<select name="year"
+								class="form-control"
+								asp-for="@Model.Year"
+								asp-items="@Model.Years">
+						</select>
+					</div>
 				</div>
 			</div>
 			

@@ -5,6 +5,6 @@ namespace MicrosTestTask.Services.Interfaces;
 
 public interface IManageService
 {
-	HistoryViewModel GetHistoryViewModel(string username, DateTime? startDate, DateTime? endDate, CategoryType? categoryType);
-	StatisticsViewModel GetStatisticsViewModel(int? month);
+	Task<HistoryViewModel> GetHistoryViewModel(string username, DateTime? startDate, DateTime? endDate, CategoryType? categoryType);
+	Task<StatisticsViewModel> GetStatisticsViewModel(string username, int? month, int? year);
 }
