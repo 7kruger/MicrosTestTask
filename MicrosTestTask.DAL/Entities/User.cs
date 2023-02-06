@@ -10,4 +10,5 @@ public class User
 	public Role Role { get; set; }
 	public bool IsBlocked { get; set; }
 	public DateTime RegistrationDate { get; set; }
+	public Profile Profile { get; set; }
 }

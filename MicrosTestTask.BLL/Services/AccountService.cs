@@ -12,10 +12,12 @@ namespace MicrosTestTask.BLL.Services;
 public class AccountService : IAccountService
 {
 	private readonly IRepository<User> _userRepository;
+	private readonly IProfileService _profileService;
 
-	public AccountService(IRepository<User> userRepository)
+	public AccountService(IRepository<User> userRepository, IProfileService profileService)
 	{
 		_userRepository = userRepository;
+		_profileService = profileService;
 	}
 
 	public async Task<IdentityResult> Register(UserModel model)
@@ -45,6 +47,7 @@ public class AccountService : IAccountService
 			};
 
 			await _userRepository.CreateAsync(user);
+			await _profileService.Create(user.Name);
 
 			var claims = GetClaimsIdentity(user);
 			return new IdentityResult(

@@ -1,0 +1,43 @@
+﻿@model MicrosTestTask.ViewModels.Profile.EditProfileViewModel
+
+@{
+    ViewData["Title"] = "Реадктирование профиля";
+}
+
+<h2 class="text-center">Настройка профиля</h2>
+<div class="container text-center" style="width: 330px;">
+
+	<div class="d-flex justify-content-center m-4">
+		<div>
+			<img class="avatar lazy"
+				 src="/images/thumbnail.png"
+				 data-src="@Model.ImgRef"
+				 onError="this.src='/images/person.svg'"
+				 alt="avatar_logo" />
+		</div>
+	</div>
+
+	<form asp-action="Edit" asp-controller="Profile" enctype="multipart/form-data" method="post">
+
+		<div class="form-group mb-3">
+			<input asp-for="Username" class="form-control" type="text" value="@Model.Username" readonly />
+		</div>
+
+		<div class="form-group mb-3">
+			<label>Загрузить свой аватар</label>
+			<input asp-for="@Model.Image" class="form-control" type="file" name="image" />
+		</div>
+
+		<div>
+			<button class="btn btn-outline-primary" type="submit">Сохранить</button>
+		</div>
+	</form>
+</div>
+
+@section Scripts {
+	<script>
+		var lazyLoadInstance = new LazyLoad({
+			elements_selector: ".lazy"
+		});
+	</script>
+}

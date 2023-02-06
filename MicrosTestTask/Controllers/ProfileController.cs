@@ -32,6 +32,7 @@ public class ProfileController : Controller
 			AllTimeIncome = model.AllTimeIncome,
 			AllTimeExpense = model.AllTimeExpense,
 			Difference = model.Difference,
+			ImgRef = model.ImgRef
 		};
 
 		return View(profile);
@@ -50,13 +51,41 @@ public class ProfileController : Controller
 				Username = model.Username,
 				AllTimeIncome = model.AllTimeIncome,
 				AllTimeExpense = model.AllTimeExpense,
-				Difference = model.Difference
+				Difference = model.Difference,
+				ImgRef = model.ImgRef
 			};
 
 			return Ok(profile);
 		}
 
 		return NotFound();
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> Edit()
+	{
+		var profile = await _profileService.Get(GetCurrentUsername);
+		var editProfileViewModel = new EditProfileViewModel { Username = profile.Username, ImgRef = profile.ImgRef };
+		return View(editProfileViewModel);
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> Edit(EditProfileViewModel model)
+	{
+		if (!ModelState.IsValid)
+		{
+			return View(model);
+		}
+
+		var updated = await _profileService.Update(model.Username, model.Image);
+
+		if (updated)
+		{
+			return RedirectToAction("Profile");
+		}
+
+		ModelState.AddModelError(string.Empty, "Произогла ошибка при обновлении профиля");
+		return View(ModelState);
 	}
 
 	private string GetCurrentUsername => User.Identity?.Name;

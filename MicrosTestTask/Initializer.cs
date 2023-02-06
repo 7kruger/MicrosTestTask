@@ -15,6 +15,7 @@ public static class Initializer
 		services.AddScoped<IRepository<User>, UserRepository>();
 		services.AddScoped<IRepository<Operation>, OperationRepository>();
 		services.AddScoped<IRepository<Category>, CategoryRepository>();
+		services.AddScoped<IRepository<Profile>, ProfileRepository>();
 	}
 
 	public static void InitializeServices(this IServiceCollection services)
@@ -25,5 +26,6 @@ public static class Initializer
 		services.AddScoped<ICategoryService, CategoryService>();
 		services.AddScoped<IOperationService, OperationService>();
 		services.AddScoped<IManageService, ManageService>();
+		services.AddScoped<ICloudStorageService, DropboxService>();
 	}
 }
