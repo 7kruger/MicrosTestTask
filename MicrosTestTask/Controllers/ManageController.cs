@@ -67,6 +67,24 @@ public class ManageController : Controller
 		return View(historyViewModel);
 	}
 
+	[HttpPost]
+	public async Task<IActionResult> Delete(int? id)
+	{
+		if (id == null)
+		{
+			return BadRequest("Неверный id");
+		}
+
+		var deleted = await _operationService.Delete((int)id);
+
+		if (deleted)
+		{
+			return Ok();
+		}
+
+		return BadRequest("Ошибка во время удаления операции");
+	}
+
 	[HttpGet]
 	public async Task<IActionResult> Statistics(int? month, int? year)
 	{

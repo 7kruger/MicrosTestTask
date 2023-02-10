@@ -74,13 +74,29 @@ public class OperationService : IOperationService
         }		
 	}
 
-	public async Task Update(OperationModel model)
+	public async Task<bool> Update(OperationModel model)
     {
-        
+        return true;
     }
 
-    public async Task Delete(int id)
+    public async Task<bool> Delete(int id)
     {
+        try
+		{
+			var operation = await _operationRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
 
+			if (operation == null)
+			{
+				return false;
+			}
+
+            await _operationRepository.DeleteAsync(operation);
+
+            return true;
+		}
+        catch (Exception)
+        {
+            return false;
+        }
     }
 }

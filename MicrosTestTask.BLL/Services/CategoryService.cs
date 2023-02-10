@@ -71,6 +71,8 @@ public class CategoryService : ICategoryService
 		{
 			var category = await _categoryRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
 
+			category.Operations.ForEach(x => x.CategoryId = category.CategoryType == DAL.Enums.CategoryType.Income ? 1 : 2 );
+
 			await _categoryRepository.DeleteAsync(category);
 
 			return true;

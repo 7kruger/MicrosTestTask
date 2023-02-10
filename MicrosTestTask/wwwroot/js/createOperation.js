@@ -46,7 +46,6 @@ const create = (operation) => {
 		data: operation
 	}).done((data) => {
 		clear();
-		operationModal.hide();
 	}).fail(() => {
 		$("#validation-message").text("Ошибка");
 	});

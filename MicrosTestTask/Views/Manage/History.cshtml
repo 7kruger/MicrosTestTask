@@ -70,7 +70,7 @@
 			var counter = 0;
 			@foreach (var item in Model.OperationViewModels)
 			{
-				<div class="card mb-1" @(counter > 4 ? "style=display:none" : string.Empty)>
+				<div id="@item.Id" class="card mb-1" @(counter > 4 ? "style=display:none" : string.Empty)>
 					<div class="card-header text-light @(item.CategoryViewModel.CategoryType == MicrosTestTask.DAL.Enums.CategoryType.Income ? " bg-success" : "bg-danger" )">
 						<strong>ID операции: @item.Id</strong>
 					</div>
@@ -80,6 +80,11 @@
 						<p><strong>Категория: </strong>@item.CategoryViewModel.Name</p>
 						<p><strong>Сумма: </strong>@item.Sum$</p>
 						<p><strong>Комментарий: </strong>@item?.Comment</p>
+					</div>
+					<div class="card-footer d-flex justify-content-end">
+						<div>
+							<button id="deleteOperation" class="btn btn-danger">Удалить</button>
+						</div>
 					</div>
 				</div>
 				counter++;

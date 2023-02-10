@@ -85,6 +85,15 @@ public class ApplicationDbContext : DbContext
                 Name = "Другое",
                 CategoryType = CategoryType.Expense
             });
+
+			builder.HasMany(x => x.Operations)
+				.WithOne(x => x.Category);
         });
+
+		modelBuilder.Entity<Operation>(builder =>
+		{
+			builder.HasOne(x => x.Category)
+				.WithMany(x => x.Operations);
+		});
 	}
 }

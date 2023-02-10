@@ -25,3 +25,20 @@ $("input[name=categoryType]").on("click", function () {
 		$("#expenseList").removeAttr("disabled");
 	}
 });
+
+$("#operations").on("click", "#deleteOperation", function () {
+	let elem = $(this).parent().parent().parent();
+
+	$.ajax({
+		method: "post",
+		url: "/manage/delete",
+		async: false,
+		data: { id: elem.attr("id") }
+	}).done(() => {
+		elem.remove();
+		deleteOperationModal.hide();
+	}).fail(e => {
+		deleteOperationModal.hide();
+		alert(e.responseText != null ? e.responseText : "Не удалось удалить операцию")
+	});
+});
