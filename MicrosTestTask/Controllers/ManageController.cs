@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MicrosTestTask.BLL.Interfaces;
 using MicrosTestTask.BLL.Models;
-using MicrosTestTask.DAL.Enums;
+using MicrosTestTask.Domain.Enums;
 using MicrosTestTask.Services.Interfaces;
 using MicrosTestTask.ViewModels.Manage;
 
@@ -31,10 +31,10 @@ public class ManageController : Controller
 		var categories = await _categoryService.GetCategories();
 		var createOperationViewModel = new CreateOperationViewModel();
 
-		createOperationViewModel.IncomeCategories = categories.Where(x => x.CategoryType == DAL.Enums.CategoryType.Income)
+		createOperationViewModel.IncomeCategories = categories.Where(x => x.CategoryType == CategoryType.Income)
 			.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name });
 
-		createOperationViewModel.ExpenseCategories = categories.Where(x => x.CategoryType == DAL.Enums.CategoryType.Expense)
+		createOperationViewModel.ExpenseCategories = categories.Where(x => x.CategoryType == CategoryType.Expense)
 			.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name });
 
 		return View(createOperationViewModel);

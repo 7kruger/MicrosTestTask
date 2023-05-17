@@ -3,6 +3,7 @@ using MicrosTestTask.BLL.Interfaces;
 using MicrosTestTask.BLL.Models;
 using MicrosTestTask.DAL.Entities;
 using MicrosTestTask.DAL.Interfaces;
+using MicrosTestTask.Domain.Enums;
 
 namespace MicrosTestTask.BLL.Services;
 
@@ -71,7 +72,7 @@ public class CategoryService : ICategoryService
 		{
 			var category = await _categoryRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
 
-			category.Operations.ForEach(x => x.CategoryId = category.CategoryType == DAL.Enums.CategoryType.Income ? 1 : 2 );
+			category.Operations.ForEach(x => x.CategoryId = category.CategoryType == CategoryType.Income ? 1 : 2 );
 
 			await _categoryRepository.DeleteAsync(category);
 

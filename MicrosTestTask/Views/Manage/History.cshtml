@@ -71,11 +71,11 @@
 			@foreach (var item in Model.OperationViewModels)
 			{
 				<div id="@item.Id" class="card mb-1" @(counter > 4 ? "style=display:none" : string.Empty)>
-					<div class="card-header text-light @(item.CategoryViewModel.CategoryType == MicrosTestTask.DAL.Enums.CategoryType.Income ? " bg-success" : "bg-danger" )">
+					<div class="card-header text-light @(item.CategoryViewModel.CategoryType == MicrosTestTask.Domain.Enums.CategoryType.Income ? " bg-success" : "bg-danger" )">
 						<strong>ID операции: @item.Id</strong>
 					</div>
 					<div class="card-body">
-						<p><strong>Тип: </strong>@(item.CategoryViewModel.CategoryType == MicrosTestTask.DAL.Enums.CategoryType.Income ? "Приход" : "Расход")</p>
+						<p><strong>Тип: </strong>@(item.CategoryViewModel.CategoryType == MicrosTestTask.Domain.Enums.CategoryType.Income ? "Приход" : "Расход")</p>
 						<p><strong>Дата: </strong>@item.Date.ToShortDateString()</p>
 						<p><strong>Категория: </strong>@item.CategoryViewModel.Name</p>
 						<p><strong>Сумма: </strong>@item.Sum$</p>

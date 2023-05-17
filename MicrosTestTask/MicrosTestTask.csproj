@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MicrosTestTask.BLL\MicrosTestTask.BLL.csproj" />
     <ProjectReference Include="..\MicrosTestTask.DAL\MicrosTestTask.DAL.csproj" />
+    <ProjectReference Include="..\MicrosTestTask.Domain\MicrosTestTask.Domain.csproj" />
   </ItemGroup>
 
 </Project>

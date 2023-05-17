@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using MicrosTestTask.DAL.Enums;
+using MicrosTestTask.Domain.Enums;
 
 namespace MicrosTestTask.ViewModels.Manage;
 

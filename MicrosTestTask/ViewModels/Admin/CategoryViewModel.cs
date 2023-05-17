@@ -1,5 +1,5 @@
 ﻿using MicrosTestTask.BLL.Models;
-using MicrosTestTask.DAL.Enums;
+using MicrosTestTask.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace MicrosTestTask.ViewModels.Admin;

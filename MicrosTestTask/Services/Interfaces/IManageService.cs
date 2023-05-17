@@ -1,4 +1,4 @@
-﻿using MicrosTestTask.DAL.Enums;
+﻿using MicrosTestTask.Domain.Enums;
 using MicrosTestTask.ViewModels.Manage;
 
 namespace MicrosTestTask.Services.Interfaces;

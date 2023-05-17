@@ -2,7 +2,7 @@
 using MicrosTestTask.BLL.Interfaces;
 using MicrosTestTask.BLL.Models;
 using MicrosTestTask.DAL.Entities;
-using MicrosTestTask.DAL.Enums;
+using MicrosTestTask.Domain.Enums;
 using MicrosTestTask.DAL.Interfaces;
 
 namespace MicrosTestTask.BLL.Services;

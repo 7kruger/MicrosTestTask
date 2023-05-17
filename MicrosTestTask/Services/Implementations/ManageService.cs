@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using MicrosTestTask.BLL.Interfaces;
-using MicrosTestTask.DAL.Enums;
+using MicrosTestTask.Domain.Enums;
 using MicrosTestTask.Services.Interfaces;
 using MicrosTestTask.ViewModels.Admin;
 using MicrosTestTask.ViewModels.Manage;
@@ -25,10 +25,10 @@ public class ManageService : IManageService
 		var categories = await _categoryService.GetCategories();
 		var historyViewModel = new HistoryViewModel();
 
-		historyViewModel.IncomeCategories = categories.Where(x => x.CategoryType == DAL.Enums.CategoryType.Income)
+		historyViewModel.IncomeCategories = categories.Where(x => x.CategoryType == CategoryType.Income)
 			.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name });
 
-		historyViewModel.ExpenseCategories = categories.Where(x => x.CategoryType == DAL.Enums.CategoryType.Expense)
+		historyViewModel.ExpenseCategories = categories.Where(x => x.CategoryType == CategoryType.Expense)
 			.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name });
 
 		var operations = (await _operationService.GetAll()).Where(x => x.User.Name == username);
