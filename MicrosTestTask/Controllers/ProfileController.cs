@@ -70,14 +70,24 @@ public class ProfileController : Controller
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> Edit(EditProfileViewModel model)
+	public async Task<IActionResult> Edit(EditProfileViewModel model, string? image)
 	{
 		if (!ModelState.IsValid)
 		{
 			return View(model);
 		}
 
-		var updated = await _profileService.Update(model.Username, model.Image);
+		IFormFile file = null;
+
+		if (!string.IsNullOrWhiteSpace(image))
+		{
+			image = image.Replace("data:image/jpeg;base64,", string.Empty);
+			var fileBytes = Convert.FromBase64String(image);
+			var ms = new MemoryStream(fileBytes);
+			file = new FormFile(ms, 0, fileBytes.Length, GetCurrentUsername, GetCurrentUsername + ".jpg");
+		}
+
+		var updated = await _profileService.Update(model.Username, file);
 
 		if (updated)
 		{
