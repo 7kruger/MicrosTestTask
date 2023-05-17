@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrosTestTask.DAL", "Micro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicrosTestTask.BLL", "MicrosTestTask.BLL\MicrosTestTask.BLL.csproj", "{4F8D2D18-7C37-42CB-8161-60C4703520FC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{E56BCF96-FB58-4977-B9E7-51989539FE02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicrosTestTask.Domain", "MicrosTestTask.Domain\MicrosTestTask.Domain.csproj", "{3D71A8DD-FBC1-4DF9-8BB3-B475A312124F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +35,10 @@ Global
 		{4F8D2D18-7C37-42CB-8161-60C4703520FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F8D2D18-7C37-42CB-8161-60C4703520FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F8D2D18-7C37-42CB-8161-60C4703520FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D71A8DD-FBC1-4DF9-8BB3-B475A312124F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D71A8DD-FBC1-4DF9-8BB3-B475A312124F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D71A8DD-FBC1-4DF9-8BB3-B475A312124F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D71A8DD-FBC1-4DF9-8BB3-B475A312124F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -38,6 +46,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D9B5C293-3D82-40DE-A32E-5EAC423A7DE5} = {CE729437-BCD6-4757-95A8-B4F040685B3C}
 		{4F8D2D18-7C37-42CB-8161-60C4703520FC} = {84758CE7-0D80-4E5E-B38D-863AB5FB46B9}
+		{3D71A8DD-FBC1-4DF9-8BB3-B475A312124F} = {E56BCF96-FB58-4977-B9E7-51989539FE02}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4EF5EF54-A01D-433E-AD52-EBCEF719DE8D}
