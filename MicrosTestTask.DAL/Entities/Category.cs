@@ -1,10 +1,11 @@
-﻿using MicrosTestTask.DAL.Enums;
+﻿using MicrosTestTask.Domain.Enums;
 
 namespace MicrosTestTask.DAL.Entities;
 
 public class Category
 {
-	public int Id { get; set; }
-	public string Name { get; set; }
-	public CategoryType CategoryType { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public CategoryType CategoryType { get; set; }
+    public List<Operation> Operations { get; set; } = new();
 }

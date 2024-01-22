@@ -21,13 +21,12 @@ public class OperationService : IOperationService
         _userRepository = userRepository;
     }
 
-    public IEnumerable<OperationModel> GetAll(string username)
+    public async Task<IEnumerable<OperationModel>> GetAll()
     {
         try
         {
-            var operations = _operationRepository.GetAll().Where(x => x.User.Name == username)
+            var operations = await _operationRepository.GetAll()
                 .OrderByDescending(c => c.Id)
-                .AsEnumerable()
                 .Select(x => new OperationModel
                 {
                     Id = x.Id,
@@ -35,8 +34,9 @@ public class OperationService : IOperationService
                     Sum = x.Sum,
                     Comment = x.Comment,
                     CategoryId = x.Category.Id,
+                    User = x.User,
                     CategoryModel = new CategoryModel { Id = x.Category.Id, Name = x.Category.Name, CategoryType = x.Category.CategoryType }
-                });
+                }).ToListAsync();
 
             return operations;
         }
@@ -74,13 +74,29 @@ public class OperationService : IOperationService
         }		
 	}
 
-	public async Task Update(OperationModel model)
+	public async Task<bool> Update(OperationModel model)
     {
-        
+        return true;
     }
 
-    public async Task Delete(int id)
+    public async Task<bool> Delete(int id)
     {
+        try
+		{
+			var operation = await _operationRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
 
+			if (operation == null)
+			{
+				return false;
+			}
+
+            await _operationRepository.DeleteAsync(operation);
+
+            return true;
+		}
+        catch (Exception)
+        {
+            return false;
+        }
     }
 }

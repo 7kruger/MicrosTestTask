@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MicrosTestTask.BLL.Interfaces;
-using MicrosTestTask.ViewModels.Admin;
-using MicrosTestTask.ViewModels.Manage;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using MicrosTestTask.BLL.Interfaces;
 using MicrosTestTask.BLL.Models;
+using MicrosTestTask.Domain.Enums;
+using MicrosTestTask.Services.Interfaces;
+using MicrosTestTask.ViewModels.Manage;
 
 namespace MicrosTestTask.Controllers;
 
@@ -13,23 +14,27 @@ public class ManageController : Controller
 {
 	private readonly IOperationService _operationService;
 	private readonly ICategoryService _categoryService;
+	private readonly IManageService _manageService;
 
-    public ManageController(IOperationService operationService, ICategoryService categoryService)
-    {
-        _operationService = operationService;
+	public ManageController(IOperationService operationService,
+							ICategoryService categoryService,
+							IManageService manageService)
+	{
+		_operationService = operationService;
 		_categoryService = categoryService;
-    }
+		_manageService = manageService;
+	}
 
 	[HttpGet]
-	public IActionResult Create()
+	public async Task<IActionResult> Create()
 	{
-		var categories = _categoryService.GetCategories();
+		var categories = await _categoryService.GetCategories();
 		var createOperationViewModel = new CreateOperationViewModel();
 
-		createOperationViewModel.IncomeCategories = categories.Where(x => x.CategoryType == DAL.Enums.CategoryType.Income)
+		createOperationViewModel.IncomeCategories = categories.Where(x => x.CategoryType == CategoryType.Income)
 			.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name });
 
-		createOperationViewModel.ExpenseCategories = categories.Where(x => x.CategoryType == DAL.Enums.CategoryType.Expense)
+		createOperationViewModel.ExpenseCategories = categories.Where(x => x.CategoryType == CategoryType.Expense)
 			.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name });
 
 		return View(createOperationViewModel);
@@ -55,39 +60,37 @@ public class ManageController : Controller
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> History(int? categoryFilterApplied)
+	public async Task<IActionResult> History(DateTime? startDate, DateTime? endDate, CategoryType? categoryType)
 	{
-		var categories = _categoryService.GetCategories();
-		var historyViewModel = new HistoryViewModel();
-
-		historyViewModel.IncomeCategories = categories.Where(x => x.CategoryType == DAL.Enums.CategoryType.Income)
-			.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name });
-
-		historyViewModel.ExpenseCategories = categories.Where(x => x.CategoryType == DAL.Enums.CategoryType.Expense)
-			.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name });
-
-		historyViewModel.OperationViewModels = _operationService.GetAll(GetCurrentUsername)
-			.Select(x => new OperationViewModel
-			{
-				Id = x.Id,
-				Sum = x.Sum,
-				Comment = x.Comment,
-				Date = x.Date,
-				CategoryViewModel = new CategoryViewModel { Id = x.CategoryModel.Id, Name = x.CategoryModel.Name, CategoryType = x.CategoryModel.CategoryType },
-				CategoryId = x.CategoryId
-			});
-
-		// TODO filters
-
-		historyViewModel.CategoryFilterApplied = categoryFilterApplied ?? 1;		
+		var historyViewModel = await _manageService.GetHistoryViewModel(GetCurrentUsername, startDate, endDate, categoryType);
 
 		return View(historyViewModel);
 	}
 
-	[HttpGet]
-	public async Task<IActionResult> Statistics()
+	[HttpPost]
+	public async Task<IActionResult> Delete(int? id)
 	{
-		return View();
+		if (id == null)
+		{
+			return BadRequest("Неверный id");
+		}
+
+		var deleted = await _operationService.Delete((int)id);
+
+		if (deleted)
+		{
+			return Ok();
+		}
+
+		return BadRequest("Ошибка во время удаления операции");
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> Statistics(int? month, int? year)
+	{
+		var statisticsViewModel = await _manageService.GetStatisticsViewModel(GetCurrentUsername, month, year);
+
+		return View(statisticsViewModel);
 	}
 
 	private string GetCurrentUsername => User.Identity.Name;

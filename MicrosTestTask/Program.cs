@@ -19,6 +19,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.InitializeRepositories();
 builder.Services.InitializeServices();
 
+builder.Services.AddAutoMapper(typeof(AppMappingProfile));
+
 builder.Services.AddRazorPages();
 builder.Services.AddMvc();
 

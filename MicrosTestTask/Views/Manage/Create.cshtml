@@ -52,69 +52,7 @@
 </div>
 
 @section Scripts {
-	<script>
-
-		$("input[name=categoryType]").on("click", function() {
-			let value = $("input[name=categoryType]:checked").val();
-			if (value == "0") {
-				$("#expenseList").attr("disabled", true);
-				$("#expenseList").hide();
-				$("#incomeList").show();
-				$("#incomeList").removeAttr("disabled");
-			} else {
-				$("#incomeList").attr("disabled", true);
-				$("#incomeList").hide();
-				$("#expenseList").show();
-				$("#expenseList").removeAttr("disabled");
-			}
-		});
-
-		$("#add").on("click", function () {
-
-			const newOperation = {
-				date: $("#date").val(),
-				sum: $("#sum").val(),
-				comment: $("#comment").val(),
-				categoryId: $("select[name=categoryId]:visible").val()
-			}
-
-			if (isEmpty(newOperation.date) || isEmpty(newOperation.sum)) {
-				$("#validation-message").text("Заполните все поля!");
-			} else {
-				create(newOperation);
-			}
-		});
-
-		const isEmpty = (str) => str.trim() == '';
-
-		const clear = () => {
-            $("#date").val('');
-            $("#sum").val('');
-            $("#comment").val('');
-            $("#validation-message").text('');
-
-            //$("#category option:eq(0)").prop("selected", true);
-            //$("#categoryType option:eq(0)").prop("selected", true);
-        }
-
-		const create = (operation) => {
-			$.ajax({
-				method: "post",
-				async: false,
-				url: "/manage/create",
-				data: operation
-			}).done((data) => {
-				Swal.fire({
-					html: "<div class='text-success'>Success!</div>"
-				})
-				clear();
-				operationModal.hide();
-			}).fail(() => {
-				$("#validation-message").text("Ошибка");
-			});
-		}
-
-	</script>
+	<script src="~/js/createOperation.js"></script>
 }
 
 

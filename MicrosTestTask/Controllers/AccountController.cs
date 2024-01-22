@@ -41,7 +41,7 @@ public class AccountController : Controller
 		if (result.Succeeded)
 		{
 			await Authenticate(result.Claims);
-			return Redirect("/");
+			return RedirectToAction("Profile", "Profile");
 		}
 
 		foreach (var error in result.Errors)
@@ -74,8 +74,8 @@ public class AccountController : Controller
 		if (result.Succeeded)
 		{
 			await Authenticate(result.Claims);
-			return Redirect("/");
-		}
+            return RedirectToAction("Profile", "Profile");
+        }
 
 		foreach (var error in result.Errors)
 		{
@@ -101,9 +101,9 @@ public class AccountController : Controller
 		var result = await _accountService.ChangePassword(model.Name, model.NewPassword);
 
 		if (result)
-		{
-			return Redirect("/");
-		}
+        {
+            return RedirectToAction("Profile", "Profile");
+        }
 
 		return View("Error", "Не удалось сменить пароль");
 	}

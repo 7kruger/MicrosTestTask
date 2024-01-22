@@ -1,7 +1,31 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Главная страница";
 }
 
-<h1>Index</h1>
+<div class="position-absolute top-50 start-50 translate-middle">
+    <p style="font-size: 24px;" class="mb-5">
+        Домашняя бухгалтерия для учета и ведения статистики по доходам и расходам.
+    </p>
+    <div class="text-secondary">
+		<div>
+			Для доступа к полному функционалу сайта, войдите в аккаунт администратора<br />
+		</div>
+        <p id="data">
+            <button class="btn btn-secondary mt-2">Показать данные для входа</button>
+        </p>
+	</div>
+    
+    <div class="text-center">
+        <a class="btn btn-primary btn-lg" href="/Profile" >Начать</a>
+    </div>
+</div>
 
+@section Scripts {
+    <script>
+        $("#data button").on("click", function() {
+            $(this).hide();
+            const block = $('<strong>Логин: </strong>"admin"<br /><strong>Пароль: </strong>"123"</p>');
+            $("#data").append(block);
+        });
+    </script>
+}

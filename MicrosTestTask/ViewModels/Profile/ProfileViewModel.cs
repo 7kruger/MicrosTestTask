@@ -6,4 +6,5 @@ public class ProfileViewModel
 	public double AllTimeIncome { get; set; }
 	public double AllTimeExpense { get; set; }
 	public double Difference { get; set; }
+	public string ImgRef { get; set; }
 }

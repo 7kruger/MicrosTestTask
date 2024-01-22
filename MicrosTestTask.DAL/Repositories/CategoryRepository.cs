@@ -15,7 +15,7 @@ public class CategoryRepository : IRepository<Category>
 
 	public IQueryable<Category> GetAll()
 	{
-		return _db.Categories;
+		return _db.Categories.Include(x => x.Operations);
 	}
 
 	public async Task CreateAsync(Category entity)

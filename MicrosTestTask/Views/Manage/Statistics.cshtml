@@ -1,10 +1,94 @@
-﻿
+﻿@model MicrosTestTask.ViewModels.Manage.StatisticsViewModel
+
 @{
-    ViewData["Title"] = "Statistics";
+    ViewData["Title"] = "Статистика";
 }
 
-<h1 class="text-center">Статистика за все время</h1>
-<div>
+<div class="m-3">
+    <form asp-action="Statistics" asp-controller="Manage" method="get">
+        <div class="d-flex justify-content-between">
+			
+			<div class="d-flex">
+				<div class="d-flex m-1">
+					<div class="pt-2 me-2">
+						<p>Статистика за </p>
+					</div>
+					<div>
+						<select name="month"
+								class="form-control"
+								asp-for="@Model.Month"
+								asp-items="@Model.Months">
+						</select>
+					</div>
+				</div>
+				<div class="d-flex m-1">
+					<div class="pt-2 me-2">
+						<p>Год: </p>
+					</div>
+					<div>
+						<select name="year"
+								class="form-control"
+								asp-for="@Model.Year"
+								asp-items="@Model.Years">
+						</select>
+					</div>
+				</div>
+			</div>
+			
+			<div>
+				<button class="btn btn-primary">Применить</button>
+			</div>
+        </div>        
+    </form>
+</div>
+<div class="m-3">
 
+	<div class="mb-5">
+		<h5>Категории приходов</h5>
+		<table class="table table-success">
+			<thead>
+				<tr>
+					<th scope="col">Название категории</th>
+					<th scope="col">Доход за месяц</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model.IncomeCategories)
+				{
+					<tr>
+						<td>@item.Name</td>
+						<td>@item.Operations.Sum(x => x.Sum)$</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="d-flex justify-content-end">
+			<strong>Всего: @Model.IncomeCategories.Sum(x => x.Operations.Sum(o => o.Sum))$</strong>
+		</div>
+	</div>
+	
+	<div>
+		<h5>Категории расходов</h5>
+		<table class="table table-danger">
+			<thead>
+				<tr>
+					<th scope="col">Название категории</th>
+					<th scope="col">Расход за месяц</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model.ExpenseCategories)
+				{
+					<tr>
+						<td>@item.Name</td>
+						<td>@item.Operations.Sum(x => x.Sum)$</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="d-flex justify-content-end">
+			<strong>Всего: @Model.ExpenseCategories.Sum(x => x.Operations.Sum(o => o.Sum))$</strong>
+		</div>
+	</div>
 </div>
 

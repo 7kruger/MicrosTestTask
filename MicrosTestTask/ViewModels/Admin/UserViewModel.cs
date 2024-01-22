@@ -1,4 +1,4 @@
-﻿using MicrosTestTask.DAL.Enums;
+﻿using MicrosTestTask.Domain.Enums;
 
 namespace MicrosTestTask.ViewModels.Admin;
 

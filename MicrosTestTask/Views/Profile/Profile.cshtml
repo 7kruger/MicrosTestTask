@@ -14,13 +14,18 @@
 			<a class="list-group-item list-group-item-action list-group-item" href="/Manage/Create">Добавить приход/расход</a>
 			<a class="list-group-item list-group-item-action list-group-item" href="/Manage/History">История</a>
 			<a class="list-group-item list-group-item-action list-group-item" href="/Manage/Statistics">Статистика</a>
+			<a class="list-group-item list-group-item-action list-group-item" href="/Profile/Edit">Редактирование профиля</a>
 			<a class="list-group-item list-group-item-action list-group-item" href="/Account/ChangePassword">Поменять пароль</a>
 		</div>		
 	</div>
 	<div class="col-md-6  text-center">
 		<div class="d-flex justify-content-center m-3">
 			<div>
-				<img />
+				<img class="avatar lazy"
+					 src="/images/thumbnail.png"
+					 data-src="@Model.ImgRef"
+					 onError="this.src='/images/person.svg'"
+					 alt="avatar_logo"/>
 			</div>
 		</div>
 		<h3>@Model.Username</h3>
@@ -31,15 +36,23 @@
 			<div class="d-flex justify-content-center">
 				<ul class="list-group list-group-horizontal">
 					@{
-						var mark = Model.Difference >= 0 ? "+" : "-";
+						var mark = Model.Difference >= 0 ? "+" : string.Empty;
 					}
-					<li class="list-group-item text-success">Приходы: +@Model.AllTimeIncome</li>
-					<li class="list-group-item">Разница: @mark@Model.Difference</li>
-					<li class="list-group-item text-danger">Расходы: -@Model.AllTimeExpense</li>
+					<li class="list-group-item text-success">Приходы: +@Model.AllTimeIncome$</li>
+					<li class="list-group-item">Разница: @mark@Model.Difference$</li>
+					<li class="list-group-item text-danger">Расходы: -@Model.AllTimeExpense$</li>
 				</ul>
 			</div>
 		</div>
 
 	</div>
 </div>
+
+@section Scripts {
+		<script>
+			var lazyLoadInstance = new LazyLoad({
+				elements_selector: ".lazy"
+			});
+		</script>
+}
 
